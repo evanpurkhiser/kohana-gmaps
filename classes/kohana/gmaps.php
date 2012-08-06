@@ -43,7 +43,36 @@ Class Kohana_Gmaps {
 	 */
 	protected static function make_request($API, $parameters)
 	{
+		// Always add the sensor parameter as false
+		$parameters += array('sensor' => 'false');
 
+		// Ensure that a valid API was requested
+		if ( ! in_array($API, self::$_APIs))
+			throw new Kohana_Exception("Invalid API");
+
+		// Setup the requst URL
+		$url = self::API_URL.$API.'/json'.URL::query($parameters, FALSE);
+
+		// Make the request
+		$response = Request::factory($url)->execute();
+
+		// Make sure the response was sucessfull
+		if ($response->status() !== 200)
+			throw new Kohana_Exception("Request unsucessfull, resoded with HTTP :code", array(
+				':code' => $response->status(),
+			));
+
+		// Convert the response JSON into a PHP array
+		$json = json_decode($response->body(), TRUE);
+
+		// Ensure that the API request executed with a "OK" status
+		if ($json['status'] !== 'OK')
+			throw new Kohana_Exception("Google Maps API responded with a :error error status", array(
+				':error' => $json['status'],
+			));
+
+		// Return the decoded JSON as an array
+		return $json;
 	}
 
 }
