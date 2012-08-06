@@ -5,12 +5,12 @@ Class Kohana_Gmaps {
 	/**
 	 * The URL to the Google Maps RESTfull API
 	 */
-	const URL = 'http://maps.googleapis.com/maps/api/';
+	const API_URL = 'http://maps.googleapis.com/maps/api/';
 
 	/**
 	 * A list of supported Google Maps web services
 	 */
-	const APIS = array('geocode', 'distancematrix');
+	protected static $_APIs = array('geocode', 'distancematrix');
 
 	/**
 	 * Use Geocoding to determine the well formatted, fully qualified address of
@@ -23,19 +23,47 @@ Class Kohana_Gmaps {
 	 */
 	public static function geocode($location)
 	{
+		try
+		{
+			$parameters = array(
+				'address' => $location,
+			);
 
+			$response = self::make_request('geocode', $parameters);
+		}
+		catch (Kohana_Exception $e)
+		{
+			return FALSE;
+		}
+
+		return $response['results'][0];
 	}
 
 	/**
 	 * Determine the distance and travel time between two locations.
 	 *
-	 * @param  string $origin      The start point
-	 * @param  string $destination The end point
+	 * @param  string  $origin      The start point
+	 * @param  string  $destination The end point
+	 * @param  boolean $imperical   Use imperical units?
 	 * @return array
 	 */
-	public static function distance($origin, $destination)
+	public static function distance($origin, $destination, $imperical = TRUE)
 	{
+		try
+		{
+			$parameters = array(
+				'origins'      => $origin,
+				'destinations' => $destination,
+			);
 
+			$response = self::make_request('distancematrix', $parameters);
+		}
+		catch (Kohana_Exception $e)
+		{
+			return FALSE;
+		}
+
+		return $response['rows'][0];
 	}
 
 	/**
