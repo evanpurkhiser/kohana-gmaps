@@ -63,7 +63,7 @@ Class Kohana_Gmaps {
 			return FALSE;
 		}
 
-		return $response['rows'][0];
+		return $response['rows'][0]['elements'][0];
 	}
 
 	/**
