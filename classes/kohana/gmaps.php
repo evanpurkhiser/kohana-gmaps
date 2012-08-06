@@ -81,6 +81,10 @@ Class Kohana_Gmaps {
 		// Setup the requst URL
 		$url = self::API_URL.$API.'/json'.URL::query($parameters, FALSE);
 
+		// Check if the data was already cached
+		if (($cached = Kohana::cache($url)) !== NULL)
+			return $cached;
+
 		// Make the request
 		$response = Request::factory($url)->execute();
 
@@ -98,6 +102,9 @@ Class Kohana_Gmaps {
 			throw new Kohana_Exception("Google Maps API responded with a :error error status", array(
 				':error' => $json['status'],
 			));
+
+		// Cache the response object for the next two weeks
+		Kohana::cache($url, $json, 1209600);
 
 		// Return the decoded JSON as an array
 		return $json;
