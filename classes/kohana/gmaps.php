@@ -44,17 +44,24 @@ Class Kohana_Gmaps {
 	 *
 	 * @param  string  $origin      The start point
 	 * @param  string  $destination The end point
-	 * @param  boolean $imperical   Use imperical units?
+	 * @param  boolean $imperial    Use imperial units?
 	 * @return array
 	 */
-	public static function distance($origin, $destination, $imperical = TRUE)
+	public static function distance($origin, $destination, $imperial = TRUE)
 	{
 		try
 		{
+			// Setup the origin and destination
 			$parameters = array(
 				'origins'      => $origin,
 				'destinations' => $destination,
 			);
+
+			// Should we use imperial units
+			if ($imperial)
+			{
+				$parameters += array('units' => 'imperial');
+			}
 
 			$response = self::make_request('distancematrix', $parameters);
 		}
