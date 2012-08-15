@@ -88,8 +88,8 @@ Class Kohana_Gmaps {
 		// Setup the requst URL
 		$url = self::API_URL.$API.'/json'.URL::query($parameters, FALSE);
 
-		// Check if the data was already cached
-		if (($cached = Kohana::cache($url)) !== NULL)
+		// Check if the data was already cached (cached for two weeks)
+		if (($cached = Kohana::cache($url, NULL, 1209600)) !== NULL)
 			return $cached;
 
 		// Make the request
@@ -110,8 +110,8 @@ Class Kohana_Gmaps {
 				':error' => $json['status'],
 			));
 
-		// Cache the response object for the next two weeks
-		Kohana::cache($url, $json, 1209600);
+		// Cache the response object
+		Kohana::cache($url, $json);
 
 		// Return the decoded JSON as an array
 		return $json;
