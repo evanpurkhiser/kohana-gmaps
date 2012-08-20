@@ -85,36 +85,54 @@ Class Kohana_Gmaps {
 		if ( ! in_array($API, self::$_APIs))
 			throw new Kohana_Exception("Invalid API");
 
-		// Setup the requst URL
+		// Setup the request URL
 		$url = self::API_URL.$API.'/json'.URL::query($parameters, FALSE);
 
 		// Check if the data was already cached (cached for two weeks)
 		if (($cached = Kohana::cache($url, NULL, 1209600)) !== NULL)
+		{
+			// If the cached object was an invalid request invalidate it after a day
+			if ($cached === FALSE)
+			{
+				Kohana::cache($url, NULL, 86400);
+				throw new Kohana_Exception("Cached request is invalid");
+			}
+
 			return $cached;
+		}
 
-		// Make the request
-		$response = Request::factory($url)->execute();
+		try
+		{
+			// Make the request
+			$response = Request::factory($url)->execute();
 
-		// Make sure the response was sucessfull
-		if ($response->status() !== 200)
-			throw new Kohana_Exception("Request unsucessfull, resoded with HTTP :code", array(
-				':code' => $response->status(),
-			));
+			// Make sure the response was successful
+			if ($response->status() !== 200)
+				throw new Kohana_Exception("Request unsuccessful, responded with HTTP :code", array(
+					':code' => $response->status(),
+				));
 
-		// Convert the response JSON into a PHP array
-		$json = json_decode($response->body(), TRUE);
+			// Convert the response JSON into a PHP array
+			$json = json_decode($response->body(), TRUE);
 
-		// Ensure that the API request executed with a "OK" status
-		if ($json['status'] !== 'OK')
-			throw new Kohana_Exception("Google Maps API responded with a :error error status", array(
-				':error' => $json['status'],
-			));
+			// Ensure that the API request executed with a "OK" status
+			if ($json['status'] !== 'OK')
+				throw new Kohana_Exception("Google Maps API responded with a :error error status", array(
+					':error' => $json['status'],
+				));
 
-		// Cache the response object
-		Kohana::cache($url, $json);
+			// Cache the response object
+			Kohana::cache($url, $json);
 
-		// Return the decoded JSON as an array
-		return $json;
+			// Return the decoded JSON as an array
+			return $json;
+		}
+		catch (Exception $e)
+		{
+			// Cache the URL as an invalid request (FALSE)
+			Kohana::cache($url, FALSE);
+			throw $e;
+		}
 	}
 
 }
