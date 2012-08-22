@@ -70,7 +70,15 @@ Class Kohana_Gmaps {
 			return FALSE;
 		}
 
-		return $response['rows'][0]['elements'][0];
+		// Get the first element since we only support one currently
+		$element = $response['rows'][0]['elements'][0];
+
+		if (Arr::get($element, 'status') !== 'OK')
+		{
+			return FALSE;
+		}
+
+		return $element;
 	}
 
 	/**
@@ -120,6 +128,8 @@ Class Kohana_Gmaps {
 				throw new Kohana_Exception("Google Maps API responded with a :error error status", array(
 					':error' => $json['status'],
 				));
+
+			print_r($json);
 
 			// Cache the response object
 			Kohana::cache($url, $json);
