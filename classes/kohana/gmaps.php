@@ -129,8 +129,6 @@ Class Kohana_Gmaps {
 					':error' => $json['status'],
 				));
 
-			print_r($json);
-
 			// Cache the response object
 			Kohana::cache($url, $json);
 
