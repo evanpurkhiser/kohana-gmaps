@@ -8,9 +8,14 @@ Class Kohana_Gmaps {
 	const API_URL = 'http://maps.googleapis.com/maps/api/';
 
 	/**
+	 * The url for the maps service
+	 */
+	const MAPS_URL = 'http://maps.google.com/';
+
+	/**
 	 * A list of supported Google Maps web services
 	 */
-	protected static $_APIs = array('geocode', 'distancematrix');
+	protected static $_APIs = array('geocode', 'distancematrix', 'staticmap');
 
 	/**
 	 * Use Geocoding to determine the well formatted, fully qualified address of
@@ -81,6 +86,58 @@ Class Kohana_Gmaps {
 		}
 
 		return $element;
+	}
+
+	/**
+	 * Generate a static map URL for use as an embedded image
+	 *
+	 * @link https://developers.google.com/maps/documentation/staticmaps/
+	 *
+	 * @param  string  $location The location to mark on the map
+	 * @param  array   $options  Extra query parameters
+	 * @param  boolean $geocode  Should the location be geocoded
+	 * @return string
+	 */
+	public static function static_map($location, $options = array(), $geocode = TRUE)
+	{
+		// Geocode the location for more accurate results if necessary
+		if ($geocode)
+		{
+			$location = Arr::get(self::geocode($location), 'formatted_address');
+		}
+
+		// Ensure the location isn't empty
+		if ( ! $location) return FALSE;
+
+		// The query parameters
+		$params = array_merge(array(
+			'center'  => $location,
+			'markers' => $location,
+			'sensor'  => 'false',
+		), $options);
+
+		return self::API_URL.'staticmap'.URL::query($params, FALSE);
+	}
+
+	/**
+	 * Get the URL to Google maps of some specific location
+	 *
+	 * @param  string  $location The location to link to
+	 * @param  boolean $geocode  Should the location be geocoded
+	 * @return string
+	 */
+	public static function url($location, $geocode = TRUE)
+	{
+		// Geocode the location for more accurate results if necessary
+		if ($geocode)
+		{
+			$location = Arr::get(self::geocode($location), 'formatted_address');
+		}
+
+		// Ensure the location isn't empty
+		if ( ! $location) return FALSE;
+
+		return self::MAPS_URL.URL::query(array('q' => $location), FALSE);
 	}
 
 	/**
