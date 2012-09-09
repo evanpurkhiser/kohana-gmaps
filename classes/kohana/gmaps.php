@@ -42,6 +42,8 @@ Class Kohana_Gmaps {
 	/**
 	 * Determine the distance and travel time between two locations.
 	 *
+	 * @link https://developers.google.com/maps/documentation/distancematrix/
+	 *
 	 * @param  string  $origin      The start point
 	 * @param  string  $destination The end point
 	 * @param  boolean $imperial    Use imperial units?
