@@ -5,12 +5,12 @@ Class Kohana_Gmaps {
 	/**
 	 * The URL to the Google Maps RESTfull API
 	 */
-	const API_URL = 'http://maps.googleapis.com/maps/api/';
+	const API_URL = 'https://maps.googleapis.com/maps/api/';
 
 	/**
 	 * The url for the maps service
 	 */
-	const MAPS_URL = 'http://maps.google.com/';
+	const MAPS_URL = 'https://maps.google.com/';
 
 	/**
 	 * A list of supported Google Maps web services
