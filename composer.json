@@ -1,0 +1,21 @@
+{
+	"name": "evanpurkhiser/kohana-gmaps",
+	"description": "A Kohana wrapper for the Google Maps API services",
+	"license": "MIT",
+	"keywords": ["kohana", "google", "gmaps", "maps", "api"],
+	"authors": [
+		{
+			"name": "Evan Purkhiser",
+			"email": "evanpurkhiser@gmail.com"
+		}
+	],
+	"require": {
+		"php"         : ">=5.2.4",
+		"kohana/core" : "3.3.*"
+	},
+	"extra": {
+		"branch-alias": {
+			"dev-3.3/master": "3.3.x-dev"
+		}
+	}
+}
